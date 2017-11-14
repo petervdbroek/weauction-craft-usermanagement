@@ -20,9 +20,14 @@ class MyAuctionPlugin extends BasePlugin
     /**
      * @return string
      */
-    public function getVersion(): string
+    public function getVersion()
     {
-        return '0.1';
+        return '1.0.0';
+    }
+
+    public function getSchemaVersion()
+    {
+        return '1.0.0';
     }
 
     /**
