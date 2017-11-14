@@ -1,0 +1,113 @@
+{% extends "_layouts/cp" %}
+{% set title = 'User management' %}
+
+{% block content %}
+
+    {% set from = craft.request.getPost('from') %}
+    {% if not from %}
+        {% set from = "now"|date("d-m-Y 00:00:00") %}
+    {% endif %}
+
+    {% set to = craft.request.getPost('to') %}
+    {% if not to %}
+        {% set to = "now"|date("d-m-Y 23:59:59") %}
+    {% endif %}
+
+    {% set groupBy = craft.request.getPost('groupBy') %}
+    {% if not groupBy %}
+        {% set groupBy = "datetime" %}
+    {% endif %}
+
+    <h2>Users</h2>
+    <form method="post" accept-charset="UTF-8" action="{{ craft.request.getUrl() }}">
+        {{ getCsrfInput() }}
+        <table style="width: 300px;">
+            <tr>
+                <td style="padding-bottom: 5px;">From</td>
+                <td style="padding-bottom: 5px;">
+                    <input type="text" name="from" value="{{ from }}" />
+                </td>
+            </tr>
+            <tr>
+                <td style="padding-bottom: 5px;">To</td>
+                <td style="padding-bottom: 5px;">
+                    <input type="text" name="to" value="{{ to }}" />
+                </td>
+            </tr>
+            <tr>
+                <td>Group by</td>
+                <td>
+                    <select name="groupBy">
+                        <option value="datetime"{% if groupBy == 'datetime' %} selected="selected"{% endif %}>Date + time</option>
+                        <option value="user"{% if groupBy == 'user' %} selected="selected"{% endif %}>User</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+        <br />
+        <input type="submit" class="btn submit" value="Filter" />
+        <br /><br />
+    </form>
+    <table class="shadow-box editable" style="width: 1200px;">
+        <thead>
+        <tr>
+            <th class="header">Datetime{% if groupBy == 'user' %} (latest){% endif %}</th>
+            {% if groupBy == 'user' %}
+                <th class="header"># logins</th>
+            {% endif %}
+            <th class="header">Name</th>
+            <th class="header">Displayname</th>
+            <th class="header">Mobile</th>
+            <th class="header">Email</th>
+            <th class="header">Deposit</th>
+            <th class="header">IP</th>
+            <th class="header">OS</th>
+            <th class="header">Browser</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for loginLog in craft.myAuction.loginLog(from, to, groupBy) %}
+                {% set user = craft.myAuction.getUser(loginLog.user_id) %}
+                {% if user %}
+                    {% set profile = user.profile %}
+                    <tr>
+                        <td style="text-align: left">{{ loginLog.dateCreated | date('d-m-Y H:i:s') }}</td>
+                        {% if groupBy == 'user' %}
+                            <td style="text-align: left">{{ loginLog.id }}</td>
+                        {% endif %}
+                        <td style="text-align: left">
+                            {% if profile %}
+                                {{ profile.initials }} {{ profile.firstname }} {{ profile.lastname }}
+                            {% endif %}
+                        </td>
+                        <td style="text-align: left">
+                            {% if profile %}
+                                {{ profile.displayname }}
+                            {% endif %}
+                        </td>
+                        <td style="text-align: left">
+                            {% if profile %}
+                                {{ profile.phone }}
+                            {% endif %}
+                        </td>
+                        <td style="text-align: left">
+                            {% if user.email %}
+                                <a href="/admin/myauction/user?id={{ user.uuid }}">{{ user.email[0].value }}</a>
+                            {% endif %}
+                        </td>
+                        <td style="background:
+                        {% if user.email and user.email[0].verified == '1' and user.profile and craft.depositManagement.userDeposited(user.email[0].value) %}
+                            #27AE60
+                        {% else %}
+                            #e74c3c
+                         {% endif %}
+                                ">&nbsp;</td>
+                        <td style="text-align: left">{{ loginLog.getAttribute('ip') }}</td>
+                        <td style="text-align: left">{{ loginLog.getAttribute('os') }}</td>
+                        <td style="text-align: left">{{ loginLog.getAttribute('browser') }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

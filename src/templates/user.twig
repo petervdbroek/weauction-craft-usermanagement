@@ -1,0 +1,69 @@
+{% extends "_layouts/cp" %}
+{% set title = 'User management' %}
+
+{% block content %}
+    {% set user = craft.myAuction.getUser(craft.request.getQuery('id')) %}
+    {% set profile = user.profile %}
+    {% if profile %}
+        <h2>{{ profile.initials }} {{ profile.firstname }} {{ profile.lastname }}</h2>
+    {% endif %}
+    <table class="shadow-box editable" style="width: 400px;">
+        <tr>
+            <td style="text-align:left"><strong>{{ "Created" | translate }}: </strong></td>
+            <td style="text-align: left">{{ (user.created // 1000)|date("d-m-Y H:i:s") }}</td>
+        </tr>
+        {% if profile %}
+            <tr>
+                <td style="text-align:left"><strong>{{ "Gender" | translate }}: </strong></td>
+                <td style="text-align: left">{{ profile.gender }}</td>
+            </tr>
+            <tr>
+                <td style="text-align:left"><strong>{{ "Nationality" | translate }}: </strong></td>
+                <td style="text-align: left">{{ profile.nationality }}</td>
+            </tr>
+            <tr>
+                <td style="text-align:left"><strong>{{ "Country" | translate }}: </strong></td>
+                <td style="text-align: left">{{ profile.country }}</td>
+            </tr>
+            <tr>
+                <td style="text-align:left"><strong>{{ "City" | translate }}: </strong></td>
+                <td style="text-align: left">{{ profile.city }}</td>
+            </tr>
+            <tr>
+                <td style="text-align:left"><strong>{{ "Address" | translate }}: </strong></td>
+                <td style="text-align: left">{{ profile.address1 }}</td>
+            </tr>
+            <tr>
+                <td style="text-align:left"><strong>{{ "Address line 2" | translate }}: </strong></td>
+                <td style="text-align: left">{{ profile.address2 }}</td>
+            </tr>
+            <tr>
+                <td style="text-align:left"><strong>{{ "Postal code" | translate }}: </strong></td>
+                <td style="text-align: left">{{ profile.zipcode }}</td>
+            </tr>
+            <tr>
+                <td style="text-align:left"><strong>{{ "Date of birth" | translate }}: </strong></td>
+                <td style="text-align: left">{{ profile.dateofbirth | date("d-m-Y") }}</td>
+            </tr>
+            <tr>
+                <td style="text-align:left"><strong>{{ "Mobile phonenumber" | translate }}: </strong></td>
+                <td style="text-align: left">{{ profile.phone }}</td>
+            </tr>
+            <tr>
+                <td style="text-align:left"><strong>{{ "Displayname" | translate }}: </strong></td>
+                <td style="text-align: left">{{ profile.displayname }}</td>
+            </tr>
+        {% endif %}
+        {% if user.email %}
+            <tr>
+                <td style="text-align:left"><strong>{{ "Email" | translate }}: </strong></td>
+                <td style="text-align: left">{{ user.email[0].value }}</td>
+            </tr>
+            <tr>
+                <td style="text-align:left"><strong>{{ "Verified" | translate }}: </strong></td>
+                <td style="text-align: left">{% if user.email[0].verified == '1' %}X{% endif %}</td>
+            </tr>
+        {% endif %}
+    </table>
+
+{% endblock %}

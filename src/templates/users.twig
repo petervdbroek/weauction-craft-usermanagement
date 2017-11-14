@@ -1,0 +1,105 @@
+{% extends "_layouts/cp" %}
+{% set title = 'User management' %}
+
+{% block content %}
+
+    <h2>Users</h2>
+    <table class="shadow-box editable" style="width: 900px;">
+        <thead>
+        <tr>
+            <th class="header" style="min-width: 141px;">Created</th>
+            <th class="header">Name</th>
+            <th class="header">Display name</th>
+            <th class="header">Mobile</th>
+            <th class="header">Email</th>
+            <th class="header">Language</th>
+            <th class="header">Email verified</th>
+            <th class="header">Profile completed</th>
+            <th class="header">Deposit</th>
+            <th class="header">Block bidder</th>
+            <th class="header">Delete bidder</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in craft.myAuction.users %}
+            {% set profile = user.profile %}
+            <tr>
+                <td style="text-align: left">
+                    {{ (user.created // 1000)|date("d-m-Y H:i:s") }}
+                </td>
+                <td style="text-align: left">
+                    {% if profile %}
+                        {{ profile.initials }} {{ profile.firstname }} {{ profile.lastname }}
+                    {%  endif %}
+                </td>
+                <td style="text-align: left">
+                    {% if profile %}
+                        {{ profile.displayname }}
+                    {%  endif %}
+                </td>
+                <td style="text-align: left">
+                    {% if profile %}
+                        {{ profile.phone }}
+                    {%  endif %}
+                </td>
+                <td style="text-align: left">
+                    {% if user.email %}
+                        <a href="/admin/myauction/user?id={{ user.uuid }}">{{ user.email[0].value }}</a>
+                    {% endif %}
+                </td>
+                <td style="text-align: left">
+                    {% if profile %}
+                        {{ profile.language }}
+                    {% endif %}
+                </td>
+                <td style="text-align: left">
+                    {% if user.email and user.email[0].verified == '1' %}
+                        <span class="status live"></span>
+                    {% else %}
+                        <a href="/actions/myAuction/register/resendVerification?email={{ user.email[0].value }}&redirect=controlpanel"><span class="btn submit">Resend</span></a>
+                    {% endif %}
+                </td>
+                <td style="text-align: left">
+                    {% if user.email and user.email[0].verified == '1' and not profile.displayname %}
+                        <a href="/actions/myAuction/login/sendCompleteProfileReminder?email={{ user.email[0].value }}"><span class="btn submit">Remind</span></a>
+                    {% else %}
+                        {% if profile.displayname %}
+                            <span class="status live"></span>
+                        {% else %}
+                            <span class="status disabled"></span>
+                        {% endif %}
+
+                    {% endif %}
+                </td>
+
+                    {% if user.email and user.email[0].verified == '1' and user.profile %}
+                        {% if craft.depositManagement.userDeposited(user.email[0].value) %}
+                            <td style="background: #27AE60">
+                            &euro; {{ craft.depositManagement.settings.deposit_amount }}
+                        {%  else %}
+                            <td>
+                                <a href="/actions/myAuction/login/sendDepositReminder?email={{ user.email[0].value }}"><span class="btn submit">Remind</span></a>
+                        {% endif %}
+                    {% else %}
+                        <td>
+                    {% endif %}
+                </td>
+
+                    {% if profile %}
+                        {% if craft.myAuction.isBlocked(user.uuid) %}
+                            <td style="background: #da5a47;"><a href="/actions/myAuction/login/unBlockBidder?id={{ user.uuid }}" onclick="return confirm('Are you sure?');"><span class="btn small">Unblock</span></a></td>
+                        {% else %}
+                            <td><a href="/actions/myAuction/login/blockBidder?id={{ user.uuid }}" onclick="return confirm('Are you sure?');"><span class="btn small">Block</span></a></td>
+                        {% endif %}
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+                <td style="text-align: left">
+                    <a href="/actions/myAuction/login/deleteUser?id={{ user.uuid }}" onclick="return confirm('Are you sure you want to delete this user?');"><span class="btn submit">Delete</span></a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

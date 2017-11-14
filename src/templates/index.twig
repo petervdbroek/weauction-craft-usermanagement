@@ -1,0 +1,22 @@
+{% extends "_layouts/cp" %}
+{% set title = 'User management' %}
+
+{% block content %}
+    <h2>Users dashboard</h2>
+    <table class="shadow-box editable" style="width: 600px;">
+        <thead>
+        <tr>
+            <th class="header"># Users registered</th>
+            <th class="header"># Users verified mail</th>
+            <th class="header"># Users completed profile</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td style="text-align: left">{{ craft.myAuction.numUsers() }}</td>
+            <td style="text-align: left">{{ craft.myAuction.numUsers('verified') }}</td>
+            <td style="text-align: left">{{ craft.myAuction.numUsers('profile')  }}</td>
+        </tr>
+        </tbody>
+    </table>
+{% endblock %}
