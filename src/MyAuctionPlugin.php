@@ -47,6 +47,22 @@ class MyAuctionPlugin extends BasePlugin
     }
 
     /**
+     * @return string
+     */
+    public function getPluginUrl()
+    {
+        return 'https://github.com/petervdbroek/weauction-craft-usermanagement';
+    }
+
+    /**
+     * @return string
+     */
+    public function getReleaseFeedUrl()
+    {
+        return 'https://raw.githubusercontent.com/petervdbroek/weauction-craft-usermanagement/master/releases.json';
+    }
+
+    /**
      * Initialize plugin
      */
     public function init()
