@@ -19,7 +19,7 @@ class MyAuction_LoginLogService extends BaseApplicationComponent
      */
     public function getLoginLog(\DateTime $from = null, \DateTime $to = null, string $groupBy = null): array
     {
-        $criteria = new CDbCriteria(array('order'=>'dateCreated DESC','limit'=>100));
+        $criteria = new CDbCriteria(array('order'=>'dateCreated DESC','limit'=>10000));
         if (null !== $from && null != $to) {
             $from->setTimezone(new \DateTimeZone('GMT'));
             $to->setTimezone(new \DateTimeZone('GMT'));

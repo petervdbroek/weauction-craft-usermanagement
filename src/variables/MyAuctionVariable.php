@@ -84,10 +84,9 @@ class MyAuctionVariable
 
         $user = craft()->myAuction_login->getUser();
 
-        /* @TODO: activate again after stress test, we don't need deposit to bid! */
-        /*if (!craft()->depositManagement_payment->userDeposited($user->email[0]->value)) {
+        if (!craft()->depositManagement_payment->userDeposited($user->email[0]->value)) {
             return null;
-        } */
+        }
 
         return craft()->myAuction_widget->generateToken($user);
     }

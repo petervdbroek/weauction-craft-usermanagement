@@ -59,12 +59,11 @@ class MyAuction_LoginService extends BaseApplicationComponent
                         $cookie = craft()->request->getCookie('myauction_login');
                         $this->redirectAfterLogin($cookie->value, false); // Only to register step 2
 
-                        /* @TODO: activate again after stress test, we don't need deposit to bid! */
-                        // Check if user has deposit, if not redirect to account page
-                        /*$user = $this->getUser();
+                        //Check if user has deposit, if not redirect to account page
+                        $user = $this->getUser();
                         if (!craft()->depositManagement_payment->userDeposited($user->email[0]->value)) {
                             craft()->request->redirect('/' . craft()->getLocale()->getId() . '/my-account/');
-                        }*/
+                        }
                     } else {
                         craft()->request->redirect('/' . craft()->getLocale()->getId() . '/viewerbidderchoice/');
                     }
